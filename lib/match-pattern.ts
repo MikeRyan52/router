@@ -55,10 +55,6 @@ export function matchPattern(pattern: string, pathname: string) {
   };
 }
 
-export function getParamNames(pattern: string) {
-  return getRegexp(pattern).keys.map(({ name }) => name);
-}
-
 export function makeParams(paramNames: (string | number)[], paramValues: any[]): Params {
   const params: Params = {};
   let lastIndex = 0;
@@ -74,17 +70,6 @@ export function makeParams(paramNames: (string | number)[], paramValues: any[]):
   return params;
 }
 
-export function getParams(pattern: string, pathname: string) {
-  const { remainingPathname, paramNames, paramValues } = matchPattern(pattern, pathname);
-
-  if (remainingPathname === null) {
-    return null;
-  }
-
-  return makeParams(paramNames, paramValues);
-}
-
-
-export function formatPattern(pattern: string, params: Params = {}) {
+export function formatPattern(pattern: string, params: Params) {
   return getCompiled(pattern)(params);
 }

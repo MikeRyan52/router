@@ -47,14 +47,6 @@ describe('Router', () => {
     expect(locationStrategy.path()).toEqual('/my/app/user/btford');
   });
 
-  xit('should normalize urls on popstate', (done) => {
-     locationStrategy.simulatePopState('/my/app/user/btford');
-     router.subscribe((ev) => {
-       expect(ev['url']).toEqual('/user/btford');
-       done();
-     });
-   });
-
   it('should revert to the previous path when a back() operation is executed', () => {
     let locationStrategy = new MockLocationStrategy();
     let router = new Router(locationStrategy);

@@ -21,10 +21,11 @@ export class RedirectHook implements Hook<Match> {
   apply(next$: Observable<Match>): Observable<Match> {
     return next$
       .filter(next => {
-        const last = next.routes[next.routes.length - 1];
+        const redirect: Route = next.routes.find(route => !!route.redirectTo);
 
-        if (last.redirectTo) {
-          this._handleRedirect(last, next);
+        if (redirect) {
+          this._handleRedirect(redirect, next);
+
           return false;
         }
 

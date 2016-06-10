@@ -1,27 +1,41 @@
 import 'rxjs/add/operator/map';
+import { SelectSignature, select } from '@ngrx/core/operator/select';
 import { Observable } from 'rxjs/Observable';
-import { Provider } from '@angular/core';
+import { Provider, Injectable } from '@angular/core';
 
 import { RouterInstruction } from './router-instruction';
 
-export abstract class RouteParams extends Observable<{ [param: string]: any }> { }
-export abstract class QueryParams extends Observable<{ [param: string]: any }> { }
+@Injectable()
+export abstract class RouteParams extends Observable<{ [param: string]: any }> {
+  constructor(instruction$: RouterInstruction) {
+    super(subscriber => {
+      const subscription = instruction$.map(next => next.routeParams).subscribe(subscriber);
 
-function createRouteParams(set$: RouterInstruction): RouteParams {
-  return set$.map(next => next.routeParams);
+      return () => subscription.unsubscribe();
+    });
+  }
+
+  select: SelectSignature<{ [param: string]: any }> = select.bind(this);
 }
 
-function createQueryParams(set$: RouterInstruction): QueryParams {
-  return set$.map(next => next.queryParams);
+@Injectable()
+export abstract class QueryParams extends Observable<{ [param: string]: any }> {
+  constructor(instruction$: RouterInstruction) {
+    super(subscriber => {
+      const subscription = instruction$.map(next => next.queryParams).subscribe(subscriber);
+
+      return () => subscription.unsubscribe();
+    });
+  }
+
+  select: SelectSignature<{ [param: string]: any }> = select.bind(this);
 }
 
 export const PARAMS_PROVIDERS = [
   new Provider(RouteParams, {
-    deps: [ RouterInstruction ],
-    useFactory: createRouteParams
+    useClass: RouteParams
   }),
   new Provider(QueryParams, {
-    deps: [ RouterInstruction ],
-    useFactory: createQueryParams
+    useClass: QueryParams
   })
 ];

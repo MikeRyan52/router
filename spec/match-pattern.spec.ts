@@ -49,4 +49,8 @@ describe('matchPattern', function() {
     assertMatch('/(foo|bar)', '/foo', '', [ 0 ], [ 'foo' ]);
     assertMatch('/(foo|bar)', '/bar', '', [ 0 ], [ 'bar' ]);
   });
+
+  it('works with a greedy splat on an index', function() {
+    assertMatch('/*', '/', '', [ 0 ], [ '' ]);
+  });
 });

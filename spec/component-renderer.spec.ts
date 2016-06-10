@@ -109,24 +109,32 @@ describe('Component Renderer', function() {
     });
 
     it('should execute before rendering', (done) => {
-      render.subscribe(() => {
-        //expect(renderHookSpy).toHaveBeenCalled();
-        //expect(viewContainerRef.createComponent).toHaveBeenCalled();
-        done();
+      render.subscribe({
+        next() {
+          expect(renderHookSpy).toHaveBeenCalled();
+          expect(viewContainerRef.createComponent).toHaveBeenCalled();
+          done();
+        },
+        error: done,
+        complete: done
       });
     });
 
     it('can modify the providers', (done) => {
-      render.subscribe(() => {
-        expect(viewContainerRef.createComponent).toHaveBeenCalled();
-        done();
+      render.subscribe({
+        next() {
+          expect(viewContainerRef.createComponent).toHaveBeenCalled();
+          done();
+        },
+        error: done,
+        complete: done
       });
     });
 
-    xit('can modify the component', (done) => {
+    it('can modify the component', (done) => {
       render.subscribe(() => {
         expect(viewContainerRef.createComponent).toHaveBeenCalled();
-        expect(viewContainerRef.createComponent.calls.mostRecent().args[0]).toEqual('newComponent');
+        expect(viewContainerRef.createComponent.calls.mostRecent().args[0]).toEqual(true);
         done();
       });
     });
